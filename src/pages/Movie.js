@@ -25,7 +25,7 @@ function Movie() {
         <ReactPlayer
           className="embed-responsive-item"
           controls
-          url='https://www.youtube.com/watch?v=oaIJNOqY1oQ'
+          url="https://www.youtube.com/embed/oaIJNOqY1oQ"
         />
       </div>
       
