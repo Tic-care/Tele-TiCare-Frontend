@@ -16,15 +16,18 @@ export default function WebcamVideo({ onCaptureStatusChange }) {
 
   const handleStartCaptureClick = useCallback(() => {
     onCaptureStatusChange('stop');
-    setCapturing(true);
-    mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-      mimeType: "video/webm",
-    });
-    mediaRecorderRef.current.addEventListener(
-      "dataavailable",
-      handleDataAvailable
-    );
-    mediaRecorderRef.current.start();
+  
+    if (webcamRef.current && webcamRef.current.stream) {
+      setCapturing(true);
+      mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+        mimeType: "video/webm",
+      });
+      mediaRecorderRef.current.addEventListener(
+        "dataavailable",
+        handleDataAvailable
+      );
+      mediaRecorderRef.current.start();
+    }
   }, [webcamRef, setCapturing, mediaRecorderRef, handleDataAvailable, onCaptureStatusChange]);
 
   const handleStopCaptureClick = useCallback(() => {
@@ -83,7 +86,7 @@ export default function WebcamVideo({ onCaptureStatusChange }) {
         mirrored={true}
         ref={webcamRef}
         videoConstraints={videoConstraints}
-        style={{ position: 'absolute', left: '-9999px' }}
+        // style={{ position: 'absolute', left: '-9999px' }}
       />
       {capturing ? (
         <button className="m-3" onClick={handleStopCaptureClick}>Stop Capture</button>

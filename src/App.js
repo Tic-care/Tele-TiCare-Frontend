@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Layout from "./pages/Layout";
 import Report from "./pages/Report";
 import Profile from "./pages/Profile";
 import NoPage from "./pages/NoPage";
@@ -8,12 +7,13 @@ import SignUp from "./pages/SignUp";
 import WebcamVideo from "./pages/WebcamVideo";
 import TestFirst from "./pages/TestFirst";
 import Movie from "./pages/Movie";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
     <BrowserRouter>
     <Routes>
-        <Route path="/" element={<Layout/>} />
+        <Route path="/" element={<Landing/>} />
         <Route path="/home" element={<Home/>} />
         <Route path="/videoRecorder" element={<WebcamVideo/>} />
         <Route path="/signup" element={<SignUp/>} />
