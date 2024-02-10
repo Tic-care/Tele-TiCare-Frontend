@@ -32,13 +32,14 @@ const Footer = () => {
         <div className="row">
           <div className="col-md-6">
             <animated.div style={slideInAnimation}>
+              
               <h4 className="mb-4">Join the TiCare Revolution!</h4>
               <p className="mb-4">
                 We're not just an app; we're your partner in understanding and managing tics. TiCare is taking care of you and your tics.
                 Whether you're a Patient or Healthcare Provider, join us in this revolutionary journey.
               </p>
               <p>Contact Us at <a href="mailto:Ticare03@gmail.com" className="text-light">Ticare03@gmail.com</a></p>
-              <MyButton buttonName={'Join Now'} buttonLink={'/home'} buttonType='pri' />
+              <MyButton buttonName={'Join Now'} buttonLink={'/signup'} buttonType='pri' />
             </animated.div>
           </div>
           <div className="col-md-6">

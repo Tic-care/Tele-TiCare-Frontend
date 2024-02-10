@@ -8,17 +8,20 @@ import WebcamVideo from "./pages/WebcamVideo";
 import TestFirst from "./pages/TestFirst";
 import Movie from "./pages/Movie";
 import Landing from "./pages/Landing";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <BrowserRouter>
     <Routes>
         <Route path="/" element={<Landing/>} />
+        <Route path="/movies" element={<Home/>} />
         <Route path="/home" element={<Home/>} />
         <Route path="/videoRecorder" element={<WebcamVideo/>} />
         <Route path="/signup" element={<SignUp/>} />
         <Route path="/profile" element={<Profile/>} />
-        <Route path="/report" element={<Report />} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/commingSoon" element={<Report />} />
         <Route path="/movie/:id" element={<Movie/>} />
         <Route path="/testfirst/:id" element={<TestFirst />} />
         <Route path="*" element={<NoPage />} />

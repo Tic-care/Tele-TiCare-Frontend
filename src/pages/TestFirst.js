@@ -1,33 +1,37 @@
 import React from 'react';
-import MyHeader from '../components/MyHeader';
-import MyNavbar from '../components/MyNavbar';
+import Layout from './Layout'
 import Webcam from 'react-webcam';
 import { Link, useParams } from 'react-router-dom';
+import MyButton from '../components/MyButton';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 export default function TestFirst() {
   const { id } = useParams();
-
+  const { isDarkMode } = useDarkMode()
+  const sectionStyle = {
+    backgroundColor: isDarkMode ? '#121212' : 'transparent',
+    color: isDarkMode ? '#ffff' : '#00000',
+  };
   return (
     <>
-      <MyHeader />
-      <MyNavbar />
-      <div className="container mt-5">
-        <div className="row">
+    <section style={sectionStyle}>
+      <Layout/>
+        <div className="row" >
           <div className="col-md-8 offset-md-3">
             <div className="card">
               <div className="card-body">
                 <h2 className="card-title">Test Your Camera First</h2>
                 <h4 className="card-subtitle mb-4">Do you see yourself? If yes, press the button</h4>
-                <Webcam className="mb-4" />
+                <Webcam className="mb-4"/>
                 <Link to={`/movie/${id}`}>
-                  <button className="btn btn-primary" style={{backgroundColor:'black'}}>Proceed to my movie</button>
+                  <MyButton buttonType='sec' buttonName={'Proceed to my movie'} Link to={`/movie/${id}`}/>
                 </Link>
                 <p className="mt-3">I accept to be recorded by proceeding</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        </section>
     </>
   );
 }

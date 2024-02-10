@@ -9,7 +9,6 @@ export default function Landing() {
   return (
     <div>
     <LandingHeader />    
-    {/* <Container className='p-4'/>  */}
     <Intro/>
     <Offers/>
     <Footer/>

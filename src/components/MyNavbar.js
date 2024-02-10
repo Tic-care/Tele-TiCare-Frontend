@@ -1,26 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; 
+import { ButtonGroup } from 'react-bootstrap'; 
+import MyButton from './MyButton';
 
 const MyNavbar = () => {
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', background: '#f0f0f0' , marginRight:'20px', marginLeft: '20px' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to="/home" style={{ marginRight: '15px', color: 'black', textDecoration: 'none' }} activeclassName="active">
-          Home
-        </Link>
-        <Link to="/profile" style={{ marginRight: '15px', color: 'black', textDecoration: 'none' }} activeClassName="active">
-          Profile
-        </Link>
-        <Link to="/report" style={{ color: 'black', textDecoration: 'none' }} activeClassName="active">
-          Report
-        </Link>
+    <div className="d-flex flex-column align-items-center">
+        <ButtonGroup>
+          <MyButton buttonName={'My Profile'} buttonLink={'/profile'} buttonType='pri' />
+          <MyButton buttonName={'Movies'} buttonLink={'/movies'} buttonType='pri' />
+          <MyButton buttonName={'Reports'} buttonLink={'/commingSoon'} buttonType='pri' />
+          <MyButton buttonName={'Education'} buttonLink={'/commingSoon'} buttonType='pri' />
+          <MyButton buttonName={'Excercises'} buttonLink={'/commingSoon'} buttonType='pri' />
+          <MyButton buttonName={'Sign Out'} buttonLink={'/'} buttonType='pri' />
+        </ButtonGroup>
       </div>
-      <div>
-        <Link to="/signup" style={{ color: 'black', textDecoration: 'none' }}>
-          Sign Out
-        </Link>
-      </div>
-    </nav>
   );
 };
 

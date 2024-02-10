@@ -36,7 +36,7 @@ export default function Intro() {
                   <span>TiCare</span> is your comprehensive, user-friendly app designed to understand and manage tics effectively, with the help of your Dr.<br />
                   Whether you're a Patient or Healthcare Provider, join us in this revolutionary journey.
                 </p>
-                <MyButton buttonName={'Join Now'} buttonLink={'/home'} buttonType="pri" />
+                <MyButton buttonName={'Join Now'} buttonLink={'/signup'} buttonType="pri" />
               </Container>
             </animated.div>
           </Col>

@@ -3,14 +3,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button , Row, Col } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { signupSchema } from '../schemas';
+import Logo from '../components/Logo'
+import { Link } from 'react-router-dom';
+import MyButton from '../components/MyButton';
+import axios from 'axios';
 
 
 const onSubmit = async (values, actions) => {
-  console.log(values);
-  console.log(actions);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  actions.resetForm();
+            try {
+                const response = await axios.post(' http://127.0.0.1:5000/register', values);
+                console.log(response.data);
+                // Handle success, e.g., show a success message or redirect to another page
+            } catch (error) {
+                console.error('Error registering user:', error);
+                // Handle error, e.g., display an error message to the user
+            } finally {
+                actions.setSubmitting(false);
+            }
+      
 };
+
 export default function SignUp() {
   const {
       values,
@@ -37,7 +49,7 @@ export default function SignUp() {
   console.log(errors)
   return (
     <Container className="d-flex flex-column align-items-center" style={{ paddingTop: '100px' }} >
-    <h2 className='m-3'>Tele-TiCare/ SignUp</h2>
+   <Logo/>
   <Form style={{  border: '1px solid #ccc', borderRadius: '10px', padding: '20px' }} onSubmit={handleSubmit} autoComplete="off">
     <Row>
       <Col>
@@ -126,11 +138,14 @@ export default function SignUp() {
       </Col>
     </Row>
     
-    <Button className='m-3' style={{backgroundColor:'black'}} variant="primary" type="submit">
-      Submit
+    <Button  style={{backgroundColor: '#874545', borderColor:'#874545'}} className='m-3'  type="submit">
+      Sign up
     </Button>
     
   </Form>
+  <Link to={'/login'}>
+      <MyButton buttonType='pri' buttonName={'have an account? Login'}></MyButton>
+  </Link>
 </Container>
 
   )

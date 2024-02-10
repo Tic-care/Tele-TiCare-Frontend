@@ -3,8 +3,14 @@ import Layout from './Layout'
 import ReactPlayer from 'react-player'
 import WebcamVideo from './WebcamVideo'
 import { Container } from 'react-bootstrap'
+import { useDarkMode } from '../contexts/DarkModeContext'
 
 function Movie() {
+  const { isDarkMode } = useDarkMode()
+  const sectionStyle = {
+    backgroundColor: isDarkMode ? '#121212' : 'transparent',
+    color: isDarkMode ? '#ffff' : '#00000',
+  };
     const [captureStatus, setCaptureStatus] = useState('start'); 
 
     const updateCaptureStatus = (status) => {
@@ -12,7 +18,7 @@ function Movie() {
     };
     
     return (
-    <>
+    <section style={sectionStyle}>
     <Layout/>
    
     <Container>
@@ -31,7 +37,7 @@ function Movie() {
       
       
     </Container>
-    </>
+    </section>
   )
 }
 

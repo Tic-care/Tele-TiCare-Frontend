@@ -32,28 +32,44 @@ export default function WebcamVideo({ onCaptureStatusChange }) {
 
   const handleStopCaptureClick = useCallback(() => {
     onCaptureStatusChange('start');
-    mediaRecorderRef.current.stop();
-    setCapturing(false);
-
-    // Send the recorded video to the backend
-    if (recordedChunks.length > 0) {
-      const formData = new FormData();
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      formData.append("video", blob, "recorded.webm");
-
-      console.log("Before making the network request");
-      postVideo(formData)
-        .then(response => {
-          console.log("Response from server:", response.data);
-        })
-        .catch(error => {
-          console.error("Error uploading video:", error);
-        });
-
-      setRecordedChunks([]);
+    
+    if (mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+  
+      const stopRecording = () => {
+        setCapturing(false);
+  
+        // Send the recorded video to the backend
+        if (recordedChunks.length > 0) {
+          const formData = new FormData();
+          const blob = new Blob(recordedChunks, { type: "video/webm" });
+          formData.append("video", blob, "recorded.webm");
+  
+          console.log("Before making the network request");
+          postVideo(formData)
+            .then(response => {
+              console.log("Response from server:", response.data);
+            })
+            .catch(error => {
+              console.error("Error uploading video:", error);
+            });
+  
+          setRecordedChunks([]);
+        }
+      };
+  
+      const waitForStop = () => {
+        if (mediaRecorderRef.current.state === 'inactive') {
+          stopRecording();
+        } else {
+          setTimeout(waitForStop, 100);
+        }
+      };
+  
+      waitForStop();
     }
   }, [mediaRecorderRef, setCapturing, recordedChunks, onCaptureStatusChange]);
-
+  
   const handleDownload = useCallback(() => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, {
@@ -86,7 +102,7 @@ export default function WebcamVideo({ onCaptureStatusChange }) {
         mirrored={true}
         ref={webcamRef}
         videoConstraints={videoConstraints}
-        // style={{ position: 'absolute', left: '-9999px' }}
+        style={{ position: 'absolute', left: '-9999px' }}
       />
       {capturing ? (
         <button className="m-3" onClick={handleStopCaptureClick}>Stop Capture</button>
