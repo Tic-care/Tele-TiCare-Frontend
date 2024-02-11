@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
 
-export default function MyButton({ buttonName, buttonLink, buttonType = 'pri' }) {
+export default function MyButton({ buttonName, buttonLink, buttonType = 'pri', onclick= null }) {
   const { isDarkMode,  } = useDarkMode();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -20,6 +20,7 @@ export default function MyButton({ buttonName, buttonLink, buttonType = 'pri' })
       href={buttonLink}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
+      onClick={onclick}
     >
       {buttonName}
     </Button>

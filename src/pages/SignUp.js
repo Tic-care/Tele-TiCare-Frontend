@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button , Row, Col } from 'react-bootstrap';
 import { useFormik } from 'formik';
@@ -6,51 +6,80 @@ import { signupSchema } from '../schemas';
 import Logo from '../components/Logo'
 import { Link } from 'react-router-dom';
 import MyButton from '../components/MyButton';
-import axios from 'axios';
+// import axios from 'axios';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+import  {getDatabase} from "firebase/database"
+import { ref, set } from 'firebase/database';
+import { useDarkMode } from '../contexts/DarkModeContext';
+import ToggleThemeIcon from '../components/ToggleThemeIcon';
 
 
-const onSubmit = async (values, actions) => {
-            try {
-                const response = await axios.post(' http://127.0.0.1:5000/register', values);
-                console.log(response.data);
-                // Handle success, e.g., show a success message or redirect to another page
-            } catch (error) {
-                console.error('Error registering user:', error);
-                // Handle error, e.g., display an error message to the user
-            } finally {
-                actions.setSubmitting(false);
-            }
-      
-};
 
-export default function SignUp() {
+const SignUp = () => {
+ 
+  const { isDarkMode } = useDarkMode();
+
+    useEffect(() => {
+    const body = document.querySelector('body');
+    body.style.backgroundColor = isDarkMode ? '#121212' : 'transparent';
+    body.style.color = isDarkMode ? '#ffff' : '#00000';
+
+    return () => {
+      body.style.backgroundColor = '';
+      body.style.color = '';
+    };
+  }, [isDarkMode]);
+  const auth = getAuth();
+  const db = getDatabase();
+
+
   const {
-      values,
-      errors,
-      touched,
-      // isSubmitting,
-      // handleBlur,
-      handleChange,
-      handleSubmit,
-    } = useFormik({
-      initialValues: {
-        firstName:"",
-        lastName:"",
-        age: "",
-        history:"",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
-      validationSchema: signupSchema, onSubmit
-    });
-  console.log(values)
-  
-  console.log(errors)
-  return (
-    <Container className="d-flex flex-column align-items-center" style={{ paddingTop: '100px' }} >
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      age: "",
+      gender:"",
+      email: "",
+      about:"",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: signupSchema,
+    onSubmit: async (values, actions) => {
+      try {
+        const { user } = await createUserWithEmailAndPassword(auth, values.email, values.password);
+
+        const reference = ref(db, 'users/'+ user.uid)
+        set(reference,{
+          userId: user.uid,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                about: values.about,
+                age: values.age,
+                email: values.email,
+                gender: values.gender
+      
+        })
+
+      console.log('User added to Firestore:', db);
+
+      } catch (error) {
+        console.error('Error registering user:', error.response ? error.response.data : error.message);
+        // Handle error, e.g., display an error message to the user
+      }
+    }
+  });  return (
+    <Container className="d-flex flex-column align-items-center" style={{ paddingTop: '100px'}} >
+    <ToggleThemeIcon/>
    <Logo/>
-  <Form style={{  border: '1px solid #ccc', borderRadius: '10px', padding: '20px' }} onSubmit={handleSubmit} autoComplete="off">
+  <Form style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '20px' }}  onSubmit={handleSubmit} autoComplete="off">
     <Row>
       <Col>
         <Form.Group controlId="firstName">
@@ -60,7 +89,7 @@ export default function SignUp() {
             onChange={handleChange}
             type="text"
             placeholder="Enter your first name"
-            className={errors.firstName&& touched.email ? 'is-invalid' : ''}
+            className={errors.firstName&& touched.firstName ? 'is-invalid' : ''}
           />
            {errors.firstName && touched.firstName && <p className="error">{errors.firstName}</p>}
         </Form.Group>
@@ -92,7 +121,22 @@ export default function SignUp() {
         </Form.Group>
       </Col>
     </Row>
-    
+    <Row>
+    <Form.Group controlId="gender">
+        <Form.Label>Gender</Form.Label>
+        <Form.Control
+          as="select"
+          value={values.gender}
+          onChange={handleChange}
+          className={errors.gender && touched.gender ? 'is-invalid' : ''}
+        >
+          <option value="" label="Select your gender" />
+          <option value="male" label="Male" />
+          <option value="female" label="Female" />
+        </Form.Control>
+        {errors.gender && touched.gender && <p className="error">{errors.gender}</p>}
+      </Form.Group>
+      </Row>
     <Row>
       <Col>
         <Form.Group controlId="email">
@@ -108,7 +152,19 @@ export default function SignUp() {
         </Form.Group>
       </Col>
     </Row>
-
+    <Row>
+    <Form.Group controlId="about">
+          <Form.Label>About</Form.Label>
+          <Form.Control
+            value={values.about}
+            onChange={handleChange}
+            type="text"
+            placeholder="Enter your tics history"
+            className={errors.about && touched.about ? 'is-invalid' : ''}
+          />
+          {errors.about && touched.about && <p className="error">{errors.about}</p>}
+        </Form.Group>
+    </Row>
     <Row>
       <Col>
         <Form.Group controlId="password">
@@ -149,4 +205,5 @@ export default function SignUp() {
 </Container>
 
   )
-}
+};
+export default SignUp;

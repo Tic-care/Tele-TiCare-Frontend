@@ -1,33 +1,94 @@
-import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 import Layout from './Layout';
+import OffersCard from '../components/OffersCard';
+import { useDarkMode } from '../contexts/DarkModeContext';
+import { checkLoginStatus } from '../firebase/AuthFunctions';
+import { getUserData } from '../firebase/FirestoreFunctions';
 
 function ProfilePage() {
+  
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Check login status
+    const unsubscribe = checkLoginStatus(async (user) => {
+      if (user) {
+        // User is logged in, get user data
+        const data = await getUserData(user.uid);
+        setUserData(data);
+      } else {
+        // No user is logged in, handle accordingly
+        setUserData(null);
+      }
+    });
+
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, []);
+
+  
+  
+  const { isDarkMode } = useDarkMode();
+  useEffect(() => {
+    const body = document.querySelector('body');
+    body.style.backgroundColor = isDarkMode ? '#121212' : 'transparent';
+    body.style.color = isDarkMode ? '#ffff' : '#00000';
+
+    return () => {
+      body.style.backgroundColor = '';
+      body.style.color = '';
+    };
+  }, [isDarkMode]);
+
   return (
-    <>
-    <Layout/>
-    <Container>
-      <Row className="justify-content-md-center mt-5">
-        <Col md={6}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Alaa Yasser</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">23 years old</Card.Subtitle>
-              <Card.Text>A beautiful girl</Card.Text>
-              <Card.Text>Email: alaayasser499@gmail.com</Card.Text>
-              <Card.Text>History: lalalalalla</Card.Text>
-              <Card.Text>
-                Number of sessions finished: 5
-                <br />
-                Number of hours: 9
-              </Card.Text>
-              <Card.Text>Keep Going</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
-    </>
+    <div>
+      <Layout />
+      { userData&&
+     ( <Container className="my-4">
+        <Row className="justify-content-center">
+          <Col md={8} lg={8}>
+            <OffersCard
+              cardType='pri'
+              cardTitle={`${userData.firstName} ${userData.lastName}`}
+              cardInfo={`${userData.age} years old, ${userData.gender}, ${userData.email}`}
+              isFixedHeight={false}
+            />
+          </Col>
+         
+        </Row>
+        {userData.about&& (<Row className="mt-4 justify-content-center">
+          <Col md={8}>
+            <OffersCard
+              cardType='pri'
+              cardTitle={'About'}
+              isFixedHeight={false}
+              // cardInfo={`Sought help for increasing facial and vocal tics that began at 12, impacting social and work life. Despite prior behavioral therapy, they hope to manage symptoms through a multidisciplinary approach, emphasizing improved daily functioning and reduced embarrassment. A clinical examination confirmed Tourette's syndrome, prompting a treatment plan integrating therapy and potential medication.`}
+            cardInfo={`${userData.about}`}
+            />
+          </Col>
+        </Row>)}
+        <Row className="mt-4 justify-content-center">
+          <Col md={4}>
+            <OffersCard
+              cardType='pri'
+              isTitle={false}
+              cardInfo={`Number of sessions finished: 5`}
+              isFixedHeight={false}
+            />
+          </Col>
+          <Col md={4}>
+            <OffersCard
+              cardType='pri'
+              isTitle={false}
+              cardInfo={`Number of hours: 9`}
+              isFixedHeight={false}
+            />
+          </Col>
+        </Row>
+      </Container>)
+      }
+    </div>
   );
 }
 

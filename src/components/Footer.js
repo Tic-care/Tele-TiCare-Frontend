@@ -5,8 +5,8 @@ import MyButton from './MyButton';
 const Footer = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    rootMargin: '-50px 0px', // Adjust the rootMargin as needed
-  });
+    rootMargin: '-100px 0px', // Adjust the rootMargin as needed
+    });
 
   const [delayedInView, setDelayedInView] = useState(false);
 
@@ -20,18 +20,27 @@ const Footer = () => {
     return () => clearTimeout(timeout);
   }, [inView])
 
-  const slideInAnimation = useSpring({
-    from: { opacity: 0, transform: 'translateX(-50px)' },
-    to: delayedInView  ? { opacity: 1, transform: 'translateX(0)' } : { opacity: 0, transform: 'translateX(-50px)' },
-    config: { mass: 1, tension: 200, friction: 20 },
+  // const slideInAnimation = useSpring({
+  //   opacity: delayedInView ? 1 : 0,
+  //   transform: delayedInView ? 'scale(1)' : 'scale(0.5)',
+  //   config: { tension: 100, friction: 20 },
+  // });
+  // You can define easing functions, for example, easeOutExpo and easeInExpo:
+  const randomBarsAnimation = useSpring({
+    opacity: delayedInView ? 1 : 0,
+    height: delayedInView ? '100%' : '0%',
+    config: { tension: 100, friction: 20 },
   });
+  
+  
+  
 
   return (
     <footer ref={ref} style={{ backgroundColor: '#1c5c63' }} className="text-light py-5">
       <div className="container">
         <div className="row">
           <div className="col-md-6">
-            <animated.div style={slideInAnimation}>
+            <animated.div style={{ height: '100%', ...randomBarsAnimation }}>
               
               <h4 className="mb-4">Join the TiCare Revolution!</h4>
               <p className="mb-4">
@@ -43,7 +52,7 @@ const Footer = () => {
             </animated.div>
           </div>
           <div className="col-md-6">
-            <animated.div style={slideInAnimation}>
+            <animated.div style={{ height: '100%', ...randomBarsAnimation }}>
               <h4 className="mb-4">Developed by:</h4>
               <p>Alaa Yasser</p>
               <p>Mahmoud Hamdy</p>

@@ -15,6 +15,8 @@ export const signupSchema = yup.object().shape({
 
     email: yup.string().email("Please enter a valid email").required("Required"),
     age: yup.number().positive().integer().required("Required"),
+    gender: yup.string().required('Required'),
+    about: yup.string().required("Required"),
     password: yup
       .string()
       .min(5)

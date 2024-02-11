@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { useFormik } from 'formik';
@@ -6,15 +6,26 @@ import { loginSchema } from '../schemas'; // Assuming you have a login schema de
 import Logo from '../components/Logo';
 import MyButton from '../components/MyButton';
 import { Link } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebase';
+import { useDarkMode } from '../contexts/DarkModeContext';
+import ToggleThemeIcon from '../components/ToggleThemeIcon';
 
-const onSubmit = async (values, actions) => {
-  console.log(values);
-  console.log(actions);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  actions.resetForm();
-};
 
 export default function Login() {
+
+  const { isDarkMode} = useDarkMode();
+  useEffect(() => {
+  const body = document.querySelector('body');
+  body.style.backgroundColor = isDarkMode ? '#121212' : 'transparent';
+  body.style.color = isDarkMode ? '#ffff' : '#00000';
+
+  return () => {
+    body.style.backgroundColor = '';
+    body.style.color = '';
+  };
+}, [isDarkMode]);
+
   const {
     values,
     errors,
@@ -27,11 +38,31 @@ export default function Login() {
       password: '',
     },
     validationSchema: loginSchema, 
-    onSubmit,
+    onSubmit: async (values, actions) => {
+      const postData = {
+        username: values.username,
+        password: values.password,
+      }
+      console.log('Data to be sent:', postData);
+      try {
+        let data= 
+        await signInWithEmailAndPassword(auth, values.username, values.password).then(
+          (userCredential)=>{
+            console.log(userCredential)
+          }).catch((error)=>{
+            console.log(error)
+          })
+        console.log(data)        
+      } catch (error) {
+        console.error('Error registering user:', error.response ? error.response.data : error.message);
+        // Handle error, e.g., display an error message to the user
+      }
+    }
   });
 
   return (
     <Container className="d-flex flex-column align-items-center" style={{ paddingTop: '100px' }}>
+      <ToggleThemeIcon/>
       <Logo />
       <Form style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '20px', width:'500px' }} onSubmit={handleSubmit} autoComplete="off">
         <Row>

@@ -1,12 +1,17 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated, useInView } from 'react-spring';
 import MyButton from './MyButton';
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
 import { FaRibbon } from 'react-icons/fa';
 import { AiFillLike } from 'react-icons/ai';
 
 export default function Intro() {
+
+  const [ref, ] = useInView({
+    triggerOnce: true,
+    rootMargin: '-50px 0px', // Adjust the rootMargin as needed
+  });
 
   const colAnimation = useSpring({
     opacity: 1,
@@ -21,7 +26,7 @@ export default function Intro() {
   });
 
   return (
-    <section className=" text-light py-4" style={{ backgroundColor: '#1c5c63' }}>
+    <section ref={ref} className=" text-light py-4" style={{ backgroundColor: '#1c5c63' }}>
       <Container>
         <Row>
           <Col md={6}>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated, useInView  } from 'react-spring';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import OffersCard from './OffersCard';
 
@@ -24,15 +24,33 @@ export default function Offers() {
     color: isDarkMode ? '#ffff' : '#00000',
   };
 
-  const cardAnimation = useSpring({
-    from: { opacity: 0, transform: 'rotateY(180deg) scale(0.5)' },
-    to: async (next) => {
-      await next({ opacity: 1, transform: 'rotateY(0deg) scale(1)' });
-    },
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    rootMargin: '-50px 0px', 
   });
 
+  
+  const [delayedInView, setDelayedInView] = useState(false);
+
+  useEffect(() => {
+    // Introduce a delay before starting the animation (1 second delay in this example)
+    const timeout = setTimeout(() => {
+      setDelayedInView(inView);
+    }, 300);
+
+    // Clear the timeout on component unmount or when inView changes
+    return () => clearTimeout(timeout);
+  }, [inView])
+
+  const cardAnimation = useSpring({
+    from: { opacity: 0, transform: 'rotateY(180deg) scale(0.5)' },
+    to: delayedInView  ? { opacity: 1, transform: 'rotateY(0deg) scale(1)' }: {opacity: 0, transform: 'rotateY(180deg) scale(0.5)'}, 
+    config: { tension: 100}
+  });
+  
+
   return (
-    <section style={sectionStyle} className="py-5">
+    <section ref={ref} style={sectionStyle} className="py-5">
       <Container className="text-center">
         <h1 className='pt-4' style={{ fontSize: '2.5rem',  color: (isDarkMode ? 'white' : 'black')}}>What <span style={{ color: (isDarkMode ? '#57cedb' : '#2b8e9a'), fontSize: '2.5rem', fontWeight: '1000' }}>TiCare</span> Offers</h1>
         <Row className="d-flex justify-content-center align-items-stretch">

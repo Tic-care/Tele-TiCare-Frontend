@@ -1,13 +1,18 @@
 import React from 'react';
-import { useSpring, animated, config } from 'react-spring';
+import { useSpring, animated, config, useInView } from 'react-spring';
 import { ButtonGroup } from 'react-bootstrap';
 import MyButton from './MyButton';
 import { useDarkMode } from '../contexts/DarkModeContext';
-import { MdOutlineDarkMode } from 'react-icons/md';
+
 import Logo from './Logo';
+import ToggleThemeIcon from './ToggleThemeIcon';
 
 const LandingHeader = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { isDarkMode } = useDarkMode();
+  const [ref, ] = useInView({
+    triggerOnce: true,
+    rootMargin: '-50px 0px', // Adjust the rootMargin as needed
+  });
 
   
   const springProps = useSpring({
@@ -20,16 +25,10 @@ const LandingHeader = () => {
   const sectionStyle = {
     backgroundColor: isDarkMode ? '#121212' : 'transparent',
   };
-  const iconStyle = {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    color: isDarkMode ? '#ffff' : '#000000',
-  };
-
+ 
   return (
-    <animated.section style={{ ...sectionStyle, ...springProps }}>
-      <MdOutlineDarkMode style={iconStyle} fontSize={25} onClick={toggleDarkMode} />
+    <animated.section ref={ref} style={{ ...sectionStyle, ...springProps }}>
+     <ToggleThemeIcon/>
       <Logo/>
       <div className="d-flex flex-column align-items-center">
         <ButtonGroup>
